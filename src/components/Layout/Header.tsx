@@ -1,9 +1,12 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, Shield, LogOut } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { useAuth } from '@/hooks/useAuth';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { user, signOut, isAdmin } = useAuth();
 
   const navItems = [
     { name: 'Home', href: '#home' },
@@ -40,10 +43,32 @@ const Header = () => {
           </nav>
 
           {/* CTA Button */}
-          <div className="hidden md:block">
-            <Button variant="default" className="hover-glow">
-              Get Started
-            </Button>
+          <div className="hidden md:flex md:items-center md:space-x-3">
+            {user ? (
+              <>
+                {isAdmin && (
+                  <Button variant="outline" size="sm" asChild className="hover-glow">
+                    <Link to="/admin">
+                      <Shield className="w-4 h-4 mr-2" />
+                      Admin
+                    </Link>
+                  </Button>
+                )}
+                <Button variant="ghost" size="sm" onClick={signOut} className="hover-glow">
+                  <LogOut className="w-4 h-4 mr-2" />
+                  Sign Out
+                </Button>
+              </>
+            ) : (
+              <>
+                <Button variant="outline" size="sm" asChild className="hover-glow">
+                  <Link to="/auth">Admin Login</Link>
+                </Button>
+                <Button variant="default" className="hover-glow">
+                  Get Started
+                </Button>
+              </>
+            )}
           </div>
 
           {/* Mobile menu button */}
@@ -73,10 +98,32 @@ const Header = () => {
                   {item.name}
                 </a>
               ))}
-              <div className="pt-4">
-                <Button variant="default" className="w-full hover-glow">
-                  Get Started
-                </Button>
+              <div className="pt-4 space-y-2">
+                {user ? (
+                  <>
+                    {isAdmin && (
+                      <Button variant="outline" size="sm" asChild className="w-full hover-glow">
+                        <Link to="/admin">
+                          <Shield className="w-4 h-4 mr-2" />
+                          Admin Dashboard
+                        </Link>
+                      </Button>
+                    )}
+                    <Button variant="ghost" size="sm" onClick={signOut} className="w-full hover-glow">
+                      <LogOut className="w-4 h-4 mr-2" />
+                      Sign Out
+                    </Button>
+                  </>
+                ) : (
+                  <>
+                    <Button variant="outline" size="sm" asChild className="w-full hover-glow">
+                      <Link to="/auth">Admin Login</Link>
+                    </Button>
+                    <Button variant="default" className="w-full hover-glow">
+                      Get Started
+                    </Button>
+                  </>
+                )}
               </div>
             </div>
           </div>

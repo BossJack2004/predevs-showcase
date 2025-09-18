@@ -4,7 +4,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useAuth } from '@/hooks/useAuth';
 import { Shield, ArrowLeft, Eye, EyeOff } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -12,8 +11,7 @@ import { Link } from 'react-router-dom';
 const Auth = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const { signIn, signUp, user } = useAuth();
+  const { signIn, user } = useAuth();
   const navigate = useNavigate();
 
   // Redirect if already authenticated
@@ -28,13 +26,6 @@ const Auth = () => {
     password: '',
   });
 
-  const [signUpForm, setSignUpForm] = useState({
-    fullName: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
-  });
-
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
@@ -43,30 +34,6 @@ const Auth = () => {
     
     if (!error) {
       navigate('/admin');
-    }
-    
-    setIsLoading(false);
-  };
-
-  const handleSignUp = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (signUpForm.password !== signUpForm.confirmPassword) {
-      return;
-    }
-
-    setIsLoading(true);
-
-    const { error } = await signUp(signUpForm.email, signUpForm.password, signUpForm.fullName);
-    
-    if (!error) {
-      // Reset form on success
-      setSignUpForm({
-        fullName: '',
-        email: '',
-        password: '',
-        confirmPassword: '',
-      });
     }
     
     setIsLoading(false);
@@ -92,7 +59,7 @@ const Auth = () => {
           </div>
           
           <div>
-            <h1 className="text-3xl font-bold gradient-text">Admin Access</h1>
+            <h1 className="text-3xl font-bold gradient-text">Admin Login</h1>
             <p className="text-muted-foreground mt-2">
               Sign in to access the admin dashboard
             </p>
@@ -101,157 +68,59 @@ const Auth = () => {
 
         <Card className="glass-card border-border/50">
           <CardHeader className="text-center pb-4">
-            <CardTitle className="text-xl">Authentication</CardTitle>
+            <CardTitle className="text-xl">Admin Access</CardTitle>
             <CardDescription>
-              Sign in or create an admin account
+              Enter your credentials to continue
             </CardDescription>
           </CardHeader>
           
           <CardContent>
-            <Tabs defaultValue="signin" className="w-full">
-              <TabsList className="grid w-full grid-cols-2 mb-6">
-                <TabsTrigger value="signin">Sign In</TabsTrigger>
-                <TabsTrigger value="signup">Sign Up</TabsTrigger>
-              </TabsList>
-
-              <TabsContent value="signin" className="space-y-4">
-                <form onSubmit={handleSignIn} className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="signin-email">Email</Label>
-                    <Input
-                      id="signin-email"
-                      type="email"
-                      placeholder="admin@example.com"
-                      value={signInForm.email}
-                      onChange={(e) => setSignInForm({ ...signInForm, email: e.target.value })}
-                      required
-                      className="bg-background/50"
-                    />
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="signin-password">Password</Label>
-                    <div className="relative">
-                      <Input
-                        id="signin-password"
-                        type={showPassword ? "text" : "password"}
-                        placeholder="Enter your password"
-                        value={signInForm.password}
-                        onChange={(e) => setSignInForm({ ...signInForm, password: e.target.value })}
-                        required
-                        className="bg-background/50 pr-10"
-                      />
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="sm"
-                        className="absolute right-2 top-1/2 -translate-y-1/2 h-7 w-7 p-0"
-                        onClick={() => setShowPassword(!showPassword)}
-                      >
-                        {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                      </Button>
-                    </div>
-                  </div>
-
-                  <Button 
-                    type="submit" 
-                    className="w-full bg-gradient-primary hover:opacity-90" 
-                    disabled={isLoading}
+            <form onSubmit={handleSignIn} className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="email">Email</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="admin@example.com"
+                  value={signInForm.email}
+                  onChange={(e) => setSignInForm({ ...signInForm, email: e.target.value })}
+                  required
+                  className="bg-background/50"
+                />
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="password">Password</Label>
+                <div className="relative">
+                  <Input
+                    id="password"
+                    type={showPassword ? "text" : "password"}
+                    placeholder="Enter your password"
+                    value={signInForm.password}
+                    onChange={(e) => setSignInForm({ ...signInForm, password: e.target.value })}
+                    required
+                    className="bg-background/50 pr-10"
+                  />
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    className="absolute right-2 top-1/2 -translate-y-1/2 h-7 w-7 p-0"
+                    onClick={() => setShowPassword(!showPassword)}
                   >
-                    {isLoading ? 'Signing in...' : 'Sign In'}
+                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                   </Button>
-                </form>
-              </TabsContent>
+                </div>
+              </div>
 
-              <TabsContent value="signup" className="space-y-4">
-                <form onSubmit={handleSignUp} className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="signup-name">Full Name</Label>
-                    <Input
-                      id="signup-name"
-                      type="text"
-                      placeholder="John Doe"
-                      value={signUpForm.fullName}
-                      onChange={(e) => setSignUpForm({ ...signUpForm, fullName: e.target.value })}
-                      required
-                      className="bg-background/50"
-                    />
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="signup-email">Email</Label>
-                    <Input
-                      id="signup-email"
-                      type="email"
-                      placeholder="admin@example.com"
-                      value={signUpForm.email}
-                      onChange={(e) => setSignUpForm({ ...signUpForm, email: e.target.value })}
-                      required
-                      className="bg-background/50"
-                    />
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="signup-password">Password</Label>
-                    <div className="relative">
-                      <Input
-                        id="signup-password"
-                        type={showPassword ? "text" : "password"}
-                        placeholder="Create a password"
-                        value={signUpForm.password}
-                        onChange={(e) => setSignUpForm({ ...signUpForm, password: e.target.value })}
-                        required
-                        className="bg-background/50 pr-10"
-                      />
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="sm"
-                        className="absolute right-2 top-1/2 -translate-y-1/2 h-7 w-7 p-0"
-                        onClick={() => setShowPassword(!showPassword)}
-                      >
-                        {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                      </Button>
-                    </div>
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="signup-confirm">Confirm Password</Label>
-                    <div className="relative">
-                      <Input
-                        id="signup-confirm"
-                        type={showConfirmPassword ? "text" : "password"}
-                        placeholder="Confirm your password"
-                        value={signUpForm.confirmPassword}
-                        onChange={(e) => setSignUpForm({ ...signUpForm, confirmPassword: e.target.value })}
-                        required
-                        className="bg-background/50 pr-10"
-                      />
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="sm"
-                        className="absolute right-2 top-1/2 -translate-y-1/2 h-7 w-7 p-0"
-                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                      >
-                        {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                      </Button>
-                    </div>
-                    {signUpForm.password !== signUpForm.confirmPassword && signUpForm.confirmPassword && (
-                      <p className="text-sm text-destructive">Passwords do not match</p>
-                    )}
-                  </div>
-
-                  <Button 
-                    type="submit" 
-                    className="w-full bg-gradient-primary hover:opacity-90" 
-                    disabled={isLoading || signUpForm.password !== signUpForm.confirmPassword}
-                  >
-                    {isLoading ? 'Creating Account...' : 'Create Account'}
-                  </Button>
-                </form>
-              </TabsContent>
-            </Tabs>
+              <Button 
+                type="submit" 
+                className="w-full bg-gradient-primary hover:opacity-90" 
+                disabled={isLoading}
+              >
+                {isLoading ? 'Signing in...' : 'Sign In'}
+              </Button>
+            </form>
           </CardContent>
         </Card>
 

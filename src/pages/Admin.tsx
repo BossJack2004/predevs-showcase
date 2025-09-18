@@ -9,6 +9,7 @@ import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Progress } from '@/components/ui/progress';
+import { useAuth } from '@/hooks/useAuth';
 import { 
   Users, 
   FolderOpen, 
@@ -28,7 +29,8 @@ import {
   Activity,
   Calendar,
   Globe,
-  Zap
+  Zap,
+  LogOut
 } from 'lucide-react';
 
 interface Project {
@@ -48,6 +50,9 @@ interface Inquiry {
 }
 
 const Admin = () => {
+  const [activeTab, setActiveTab] = useState('projects');
+  const { user, signOut } = useAuth();
+  
   const [projects] = useState<Project[]>([
     { id: '1', title: 'E-commerce Platform Redesign', status: 'published', created: '2024-01-15' },
     { id: '2', title: 'Mobile Banking App', status: 'published', created: '2024-01-10' },
@@ -121,11 +126,17 @@ const Admin = () => {
                 <div className="h-2 w-2 rounded-full bg-success animate-pulse" />
                 <span className="text-xs font-medium text-success">Online</span>
               </div>
+              <div className="hidden md:block text-sm text-muted-foreground">
+                Welcome, {user?.email}
+              </div>
               <Button variant="outline" asChild className="hover-scale">
                 <a href="/" className="flex items-center gap-2">
                   <Eye className="h-4 w-4" />
                   View Site
                 </a>
+              </Button>
+              <Button variant="ghost" onClick={signOut} className="hover-scale text-muted-foreground hover:text-foreground">
+                <LogOut className="h-4 w-4" />
               </Button>
             </div>
           </div>

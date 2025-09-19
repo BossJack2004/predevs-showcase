@@ -7,6 +7,7 @@ import { Label } from '@/components/ui/label';
 import { useState } from 'react';
 import { useInquiries } from '@/hooks/useInquiries';
 import { useSiteContent } from '@/hooks/useSiteContent';
+import { track } from '@vercel/analytics';
 import { 
   Mail, 
   Phone, 
@@ -63,6 +64,10 @@ const Contact = () => {
     setLoading(true);
     try {
       await submitInquiry(formData);
+      track('contact_form_submitted', { 
+        subject: formData.subject || 'General Inquiry',
+        hasCompany: !!formData.company 
+      });
       setFormData({
         name: '',
         email: '',

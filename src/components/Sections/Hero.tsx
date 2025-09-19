@@ -1,6 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { ArrowRight, Play } from 'lucide-react';
 import { useSiteContent } from '@/hooks/useSiteContent';
+import { track } from '@vercel/analytics';
 import heroBg from '@/assets/hero-bg.jpg';
 
 const Hero = () => {
@@ -58,11 +59,20 @@ const Hero = () => {
 
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
-            <Button size="lg" className="hover-glow interactive-scale group">
+            <Button 
+              size="lg" 
+              className="hover-glow interactive-scale group"
+              onClick={() => track('hero_view_work_clicked')}
+            >
               View Our Work
               <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
             </Button>
-            <Button variant="outline" size="lg" className="interactive-scale group">
+            <Button 
+              variant="outline" 
+              size="lg" 
+              className="interactive-scale group"
+              onClick={() => track('hero_watch_demo_clicked')}
+            >
               <Play className="mr-2 h-5 w-5 group-hover:scale-110 transition-transform" />
               Watch Demo
             </Button>

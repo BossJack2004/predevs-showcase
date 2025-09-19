@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Progress } from '@/components/ui/progress';
 import { useProjects } from '@/hooks/useProjects';
+import { track } from '@vercel/analytics';
 import { 
   ExternalLink, 
   Github,
@@ -427,7 +428,10 @@ const Portfolio = () => {
                     variant="outline" 
                     size="lg"
                     className="flex-1 border-primary/30 hover:border-primary/50 hover-scale group"
-                    onClick={() => setSelectedProject(project)}
+                    onClick={() => {
+                      track('portfolio_case_study_clicked', { project: project.title });
+                      setSelectedProject(project);
+                    }}
                   >
                     <BarChart3 className="h-4 w-4 mr-2 group-hover:scale-110 transition-transform" />
                     Case Study

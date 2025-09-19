@@ -13,6 +13,7 @@ import { useProjects } from '@/hooks/useProjects';
 import { useInquiries } from '@/hooks/useInquiries';
 import { useSiteContent } from '@/hooks/useSiteContent';
 import { ProjectForm } from '@/components/admin/ProjectForm';
+import { track } from '@vercel/analytics';
 import { 
   Users, 
   FolderOpen, 
@@ -356,6 +357,7 @@ const AdminDynamic = () => {
               <Button 
                 className="bg-gradient-primary text-white shadow-lg shadow-primary/25 hover:shadow-primary/35 hover-scale"
                 onClick={() => {
+                  track('admin_new_project_clicked');
                   setSelectedProject(null);
                   setShowProjectForm(true);
                 }}

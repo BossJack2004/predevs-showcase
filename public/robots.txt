@@ -12,3 +12,14 @@ Allow: /
 
 User-agent: *
 Allow: /
+
+# Sitemap
+Sitemap: https://precodes.com/sitemap.xml
+
+# Crawl-delay for respectful crawling
+Crawl-delay: 1
+
+# Block admin and auth pages from indexing
+Disallow: /admin
+Disallow: /auth
+Disallow: /api/

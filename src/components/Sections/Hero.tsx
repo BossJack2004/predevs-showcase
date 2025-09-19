@@ -40,11 +40,11 @@ const Hero = () => {
               <span className="gradient-text">{content.hero_title}</span>
             ) : (
               <>
-                <span className="gradient-text">Professional</span>
+                <span className="gradient-text">PREDEVS</span>
                 <br />
-                <span className="text-foreground">Reliable</span>
+                <span className="text-foreground">Professional</span>
                 <br />
-                <span className="gradient-text">Exceptional</span>
+                <span className="gradient-text">Development</span>
               </>
             )}
           </h1>
@@ -52,7 +52,7 @@ const Hero = () => {
           {/* Subheading */}
           <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto mb-8 leading-relaxed">
             {content?.hero_subtitle || 
-              "We craft digital experiences that elevate your business. Expert development, reliable solutions, exceptional results."
+              "We craft exceptional digital experiences that elevate your business. Expert development, reliable solutions, extraordinary results."
             }
           </p>
 
@@ -71,9 +71,9 @@ const Hero = () => {
           {/* Stats */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-3xl mx-auto">
             {[
-              { value: '50+', label: 'Projects Delivered' },
+              { value: '100+', label: 'Projects Delivered' },
               { value: '99%', label: 'Client Satisfaction' },
-              { value: '5+', label: 'Years Experience' },
+              { value: '8+', label: 'Years Experience' },
               { value: '24/7', label: 'Support Available' },
             ].map((stat, index) => (
               <div 

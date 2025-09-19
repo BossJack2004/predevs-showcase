@@ -51,15 +51,15 @@ const Portfolio = () => {
   const defaultProjects = [
     {
       id: 'default-1',
-      title: 'ShopFlow - E-Commerce Platform',
+      title: 'EcoShop - E-Commerce Platform',
       category: 'web',
-      shortDescription: 'Next-generation e-commerce platform with AI-powered recommendations.',
+      shortDescription: 'Next-generation e-commerce platform with AI-powered recommendations and sustainable shopping features.',
       fullDescription: 'A comprehensive e-commerce solution featuring real-time inventory management, advanced analytics, AI-powered product recommendations, and seamless payment processing. Built with modern React architecture and microservices backend.',
       technologies: ['React', 'Next.js', 'Node.js', 'PostgreSQL', 'Stripe', 'Redis', 'AWS'],
       image: ecommerceImg,
       mockupType: 'laptop',
-      liveUrl: 'https://shopflow-demo.predevs.com',
-      githubUrl: 'https://github.com/predevs/shopflow',
+      liveUrl: 'https://ecoshop-demo.predevs.dev',
+      githubUrl: 'https://github.com/predevs/ecoshop',
       duration: '4 months',
       teamSize: '6 developers',
       results: {
@@ -69,9 +69,9 @@ const Portfolio = () => {
         revenue: '$2M+ processed'
       },
       testimonial: {
-        text: "The team delivered beyond our expectations. Our conversion rate increased by 25% within the first month!",
+        text: "PREDEVS delivered beyond our expectations. Our conversion rate increased by 25% within the first month!",
         author: "Sarah Johnson",
-        role: "CEO, ShopFlow Inc.",
+        role: "CEO, EcoShop Inc.",
         rating: 5
       },
       features: [
@@ -86,15 +86,15 @@ const Portfolio = () => {
     },
     {
       id: 'default-2',
-      title: 'SecureBank - Mobile Banking',
+      title: 'SecureBank Mobile - Banking App',
       category: 'mobile',
-      shortDescription: 'Secure mobile banking app with biometric authentication and real-time features.',
+      shortDescription: 'Secure mobile banking app with biometric authentication and real-time transaction features.',
       fullDescription: 'A cutting-edge mobile banking application featuring biometric authentication, real-time transaction processing, budget tracking, and investment portfolio management. Built with React Native and robust security protocols.',
       technologies: ['React Native', 'TypeScript', 'Firebase', 'Plaid API', 'AWS', 'Node.js'],
       image: bankingImg,
       mockupType: 'mobile',
-      liveUrl: 'https://apps.apple.com/securebank',
-      githubUrl: 'https://github.com/predevs/securebank',
+      liveUrl: 'https://apps.apple.com/securebank-mobile',
+      githubUrl: 'https://github.com/predevs/securebank-mobile',
       duration: '6 months',
       teamSize: '8 developers',
       results: {
@@ -128,7 +128,7 @@ const Portfolio = () => {
       technologies: ['Next.js', 'TypeScript', 'D3.js', 'Python', 'FastAPI', 'PostgreSQL'],
       image: saasImg,
       mockupType: 'desktop',
-      liveUrl: 'https://dataviz-pro.predevs.com',
+      liveUrl: 'https://dataviz-pro.predevs.dev',
       githubUrl: 'https://github.com/predevs/dataviz-pro',
       duration: '5 months',
       teamSize: '7 developers',
@@ -139,9 +139,9 @@ const Portfolio = () => {
         growth: '300% user growth'
       },
       testimonial: {
-        text: "DataViz Pro transformed how we understand our business data. The insights are incredible!",
+        text: "PREDEVS transformed how we understand our business data. The insights and performance are incredible!",
         author: "Lisa Rodriguez",
-        role: "Data Director, TechCorp",
+        role: "Data Director, TechCorp Analytics",
         rating: 5
       },
       features: [
@@ -156,14 +156,14 @@ const Portfolio = () => {
     },
     {
       id: 'default-4',
-      title: 'SmartCRM - AI-Powered System',
+      title: 'SmartCRM - AI-Powered CRM System',
       category: 'enterprise',
-      shortDescription: 'Enterprise CRM with AI-powered lead scoring and automation workflows.',
+      shortDescription: 'Enterprise CRM with AI-powered lead scoring and automation workflows for sales teams.',
       fullDescription: 'An intelligent customer relationship management system featuring AI-powered lead scoring, automated workflows, advanced reporting, and seamless integrations. Designed for enterprise-scale operations.',
       technologies: ['Vue.js', 'Python', 'TensorFlow', 'MongoDB', 'Docker', 'Kubernetes'],
       image: crmImg,
       mockupType: 'tablet',
-      liveUrl: 'https://smartcrm-demo.predevs.com',
+      liveUrl: 'https://smartcrm-demo.predevs.dev',
       githubUrl: 'https://github.com/predevs/smartcrm',
       duration: '8 months',
       teamSize: '10 developers',

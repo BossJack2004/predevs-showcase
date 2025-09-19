@@ -33,19 +33,19 @@ const Contact = () => {
     {
       icon: Mail,
       title: 'Email Us',
-      content: settings?.contact_email || 'hello@predevs.com',
-      link: `mailto:${settings?.contact_email || 'hello@predevs.com'}`,
+      content: settings?.contact_email || 'hello@predevs.dev',
+      link: `mailto:${settings?.contact_email || 'hello@predevs.dev'}`,
     },
     {
       icon: Phone,
       title: 'Call Us',
-      content: settings?.phone || '+1 (555) 123-4567',
-      link: `tel:${settings?.phone || '+15551234567'}`,
+      content: settings?.phone || '+1 (555) 832-3387',
+      link: `tel:${settings?.phone || '+15558323387'}`,
     },
     {
       icon: MapPin,
       title: 'Visit Us',
-      content: settings?.address || 'San Francisco, CA',
+      content: settings?.address || 'San Francisco, CA, USA',
       link: '#',
     },
     {

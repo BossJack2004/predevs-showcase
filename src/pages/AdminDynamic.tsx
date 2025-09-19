@@ -39,12 +39,95 @@ import {
 
 const AdminDynamic = () => {
   const { user, signOut } = useAuth();
-  const { projects, loading: projectsLoading, addProject, updateProject, deleteProject } = useProjects();
+  const { projects: dbProjects, loading: projectsLoading, addProject, updateProject, deleteProject } = useProjects();
   const { inquiries, loading: inquiriesLoading, updateInquiryStatus } = useInquiries();
   const { content, settings, updateContent, updateSettings } = useSiteContent();
   
+  const [allProjects, setAllProjects] = useState<any[]>([]);
   const [selectedProject, setSelectedProject] = useState(null);
   const [showProjectForm, setShowProjectForm] = useState(false);
+  
+  // Default projects with PREDEVS.dev branding
+  const defaultProjects = [
+    {
+      id: 'default-1',
+      title: 'EcoShop - E-Commerce Platform',
+      category: 'web',
+      description: 'Next-generation e-commerce platform with AI-powered recommendations and sustainable shopping features.',
+      long_description: 'A comprehensive e-commerce solution featuring real-time inventory management, advanced analytics, AI-powered product recommendations, and seamless payment processing. Built with modern React architecture and microservices backend for maximum scalability.',
+      technologies: ['React', 'Next.js', 'Node.js', 'PostgreSQL', 'Stripe', 'Redis', 'AWS'],
+      image_url: '/assets/portfolio-ecommerce.jpg',
+      project_url: 'https://ecoshop-demo.predevs.dev',
+      github_url: 'https://github.com/predevs/ecoshop',
+      client_name: 'EcoShop Inc.',
+      start_date: '2024-01-01',
+      end_date: '2024-04-30',
+      status: 'completed',
+      featured: true,
+      created_at: '2024-01-15T00:00:00Z',
+      updated_at: '2024-04-30T00:00:00Z'
+    },
+    {
+      id: 'default-2',
+      title: 'SecureBank Mobile - Banking App',
+      category: 'mobile',
+      description: 'Secure mobile banking app with biometric authentication and real-time transaction features.',
+      long_description: 'A cutting-edge mobile banking application featuring biometric authentication, real-time transaction processing, budget tracking, and investment portfolio management. Built with React Native and robust security protocols.',
+      technologies: ['React Native', 'TypeScript', 'Firebase', 'Plaid API', 'AWS', 'Node.js'],
+      image_url: '/assets/portfolio-banking.jpg',
+      project_url: 'https://apps.apple.com/securebank-mobile',
+      github_url: 'https://github.com/predevs/securebank-mobile',
+      client_name: 'SecureBank Corp',
+      start_date: '2024-02-01',
+      end_date: '2024-07-30',
+      status: 'completed',
+      featured: true,
+      created_at: '2024-02-01T00:00:00Z',
+      updated_at: '2024-07-30T00:00:00Z'
+    },
+    {
+      id: 'default-3',
+      title: 'DataViz Pro - Analytics Dashboard',
+      category: 'web',
+      description: 'Advanced analytics dashboard with real-time data visualization and reporting capabilities.',
+      long_description: 'A powerful SaaS analytics platform offering real-time data visualization, custom reporting, predictive analytics, and team collaboration features. Built with modern web technologies and optimized for performance.',
+      technologies: ['Next.js', 'TypeScript', 'D3.js', 'Python', 'FastAPI', 'PostgreSQL'],
+      image_url: '/assets/portfolio-saas.jpg',
+      project_url: 'https://dataviz-pro.predevs.dev',
+      github_url: 'https://github.com/predevs/dataviz-pro',
+      client_name: 'TechCorp Analytics',
+      start_date: '2024-03-01',
+      end_date: '2024-08-15',
+      status: 'completed',
+      featured: true,
+      created_at: '2024-03-01T00:00:00Z',
+      updated_at: '2024-08-15T00:00:00Z'
+    },
+    {
+      id: 'default-4',
+      title: 'SmartCRM - AI-Powered CRM System',
+      category: 'enterprise',
+      description: 'Enterprise CRM with AI-powered lead scoring and automation workflows for sales teams.',
+      long_description: 'An intelligent customer relationship management system featuring AI-powered lead scoring, automated workflows, advanced reporting, and seamless integrations. Designed for enterprise-scale operations with high-performance architecture.',
+      technologies: ['Vue.js', 'Python', 'TensorFlow', 'MongoDB', 'Docker', 'Kubernetes'],
+      image_url: '/assets/portfolio-crm.jpg',
+      project_url: 'https://smartcrm-demo.predevs.dev',
+      github_url: 'https://github.com/predevs/smartcrm',
+      client_name: 'Enterprise Solutions Ltd',
+      start_date: '2024-04-01',
+      end_date: '2024-11-30',
+      status: 'completed',
+      featured: true,
+      created_at: '2024-04-01T00:00:00Z',
+      updated_at: '2024-11-30T00:00:00Z'
+    }
+  ];
+
+  // Merge database projects with default projects
+  React.useEffect(() => {
+    setAllProjects([...dbProjects, ...defaultProjects]);
+  }, [dbProjects]);
+
   const [contentForm, setContentForm] = useState({
     hero_title: content?.hero_title || '',
     hero_subtitle: content?.hero_subtitle || '',
@@ -83,7 +166,7 @@ const AdminDynamic = () => {
   const statsCards = [
     { 
       title: 'Total Projects', 
-      value: projects.length.toString(), 
+      value: allProjects.length.toString(), 
       icon: FolderOpen, 
       change: '+2 this month',
       changeType: 'positive' as const,
@@ -155,7 +238,7 @@ const AdminDynamic = () => {
                 <h1 className="text-2xl font-bold text-foreground">Admin Dashboard</h1>
                 <p className="text-sm text-muted-foreground flex items-center gap-2">
                   <Globe className="h-3 w-3" />
-                  Predevs.com Management Portal
+                  PREDEVS.dev Management Portal
                 </p>
               </div>
             </div>
@@ -274,7 +357,7 @@ const AdminDynamic = () => {
                   </div>
                   <div className="flex items-center gap-2 text-sm text-muted-foreground">
                     <Calendar className="h-4 w-4" />
-                    <span>{projects.length} total</span>
+                    <span>{allProjects.length} total</span>
                   </div>
                 </div>
               </CardHeader>
@@ -283,8 +366,8 @@ const AdminDynamic = () => {
                   <div className="text-center py-8">Loading projects...</div>
                 ) : (
                   <div className="space-y-4">
-                    {projects.map((project, index) => (
-                      <div 
+                    {allProjects.map((project, index) => (
+                      <div
                         key={project.id} 
                         className="group flex items-center justify-between rounded-xl border border-border/40 p-4 bg-background/50 hover:bg-background/80 transition-all duration-300 hover:shadow-md animate-fade-in"
                         style={{ animationDelay: `${index * 100}ms` }}
@@ -318,25 +401,34 @@ const AdminDynamic = () => {
                             )}
                             {project.status}
                           </Badge>
-                          <Button 
-                            variant="ghost" 
-                            size="sm" 
-                            className="opacity-0 group-hover:opacity-100 transition-opacity hover-scale"
-                            onClick={() => {
-                              setSelectedProject(project);
-                              setShowProjectForm(true);
-                            }}
-                          >
-                            <Edit3 className="h-4 w-4" />
-                          </Button>
-                          <Button 
-                            variant="ghost" 
-                            size="sm" 
-                            className="opacity-0 group-hover:opacity-100 transition-opacity hover-scale text-destructive"
-                            onClick={() => handleDeleteProject(project.id)}
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
+                          {!project.id.toString().startsWith('default-') && (
+                            <>
+                              <Button 
+                                variant="ghost" 
+                                size="sm" 
+                                className="opacity-0 group-hover:opacity-100 transition-opacity hover-scale"
+                                onClick={() => {
+                                  setSelectedProject(project);
+                                  setShowProjectForm(true);
+                                }}
+                              >
+                                <Edit3 className="h-4 w-4" />
+                              </Button>
+                              <Button 
+                                variant="ghost" 
+                                size="sm" 
+                                className="opacity-0 group-hover:opacity-100 transition-opacity hover-scale text-destructive"
+                                onClick={() => handleDeleteProject(project.id)}
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
+                            </>
+                          )}
+                          {project.id.toString().startsWith('default-') && (
+                            <Badge variant="outline" className="text-xs">
+                              Sample Project
+                            </Badge>
+                          )}
                         </div>
                       </div>
                     ))}
@@ -435,7 +527,7 @@ const AdminDynamic = () => {
                     id="hero_title"
                     value={contentForm.hero_title}
                     onChange={(e) => setContentForm(prev => ({ ...prev, hero_title: e.target.value }))}
-                    placeholder="Professional Reliable Exceptional"
+                    placeholder="PREDEVS - Professional Development Team"
                   />
                 </div>
                 <div className="space-y-2">
@@ -444,7 +536,7 @@ const AdminDynamic = () => {
                     id="hero_subtitle"
                     value={contentForm.hero_subtitle}
                     onChange={(e) => setContentForm(prev => ({ ...prev, hero_subtitle: e.target.value }))}
-                    placeholder="We craft digital experiences that elevate your business..."
+                    placeholder="We craft exceptional digital experiences that elevate your business to new heights..."
                     rows={3}
                   />
                 </div>
@@ -481,7 +573,7 @@ const AdminDynamic = () => {
                       id="site_name"
                       value={settingsForm.site_name}
                       onChange={(e) => setSettingsForm(prev => ({ ...prev, site_name: e.target.value }))}
-                      placeholder="Predevs"
+                      placeholder="PREDEVS"
                     />
                   </div>
                   <div className="space-y-2">
@@ -490,7 +582,7 @@ const AdminDynamic = () => {
                       id="meta_title"
                       value={settingsForm.meta_title}
                       onChange={(e) => setSettingsForm(prev => ({ ...prev, meta_title: e.target.value }))}
-                      placeholder="Professional Development Team"
+                      placeholder="PREDEVS - Professional Development Solutions"
                     />
                   </div>
                   <div className="space-y-2">
@@ -499,7 +591,7 @@ const AdminDynamic = () => {
                       id="meta_description"
                       value={settingsForm.meta_description}
                       onChange={(e) => setSettingsForm(prev => ({ ...prev, meta_description: e.target.value }))}
-                      placeholder="Expert development team delivering exceptional results..."
+                      placeholder="Expert development team delivering exceptional digital solutions that drive real business results..."
                       rows={3}
                     />
                   </div>
@@ -519,7 +611,7 @@ const AdminDynamic = () => {
                       type="email"
                       value={settingsForm.contact_email}
                       onChange={(e) => setSettingsForm(prev => ({ ...prev, contact_email: e.target.value }))}
-                      placeholder="hello@predevs.com"
+                      placeholder="hello@predevs.dev"
                     />
                   </div>
                   <div className="space-y-2">

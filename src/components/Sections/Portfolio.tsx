@@ -424,20 +424,9 @@ const Portfolio = () => {
                 {/* Action Buttons */}
                 <div className="flex gap-3">
                   <Button 
-                    variant="default" 
-                    size="lg" 
-                    className="flex-1 bg-gradient-primary text-white shadow-lg shadow-primary/25 hover:shadow-primary/35 hover-scale group"
-                    asChild
-                  >
-                    <a href={project.liveUrl} target="_blank" rel="noopener noreferrer">
-                      <Eye className="h-4 w-4 mr-2 group-hover:scale-110 transition-transform" />
-                      Live Demo
-                    </a>
-                  </Button>
-                  <Button 
                     variant="outline" 
                     size="lg"
-                    className="border-primary/30 hover:border-primary/50 hover-scale group"
+                    className="flex-1 border-primary/30 hover:border-primary/50 hover-scale group"
                     onClick={() => setSelectedProject(project)}
                   >
                     <BarChart3 className="h-4 w-4 mr-2 group-hover:scale-110 transition-transform" />
@@ -457,10 +446,6 @@ const Portfolio = () => {
                       {project.teamSize}
                     </div>
                   </div>
-                  <Button variant="ghost" size="sm" className="hover-scale group">
-                    <Github className="h-4 w-4 mr-1 group-hover:scale-110 transition-transform" />
-                    Code
-                  </Button>
                 </div>
               </CardContent>
             </Card>
@@ -568,20 +553,6 @@ const Portfolio = () => {
                   </div>
                 </div>
 
-                <div className="flex gap-4">
-                  <Button asChild className="bg-gradient-primary text-white">
-                    <a href={selectedProject.liveUrl} target="_blank" rel="noopener noreferrer">
-                      <ExternalLink className="mr-2 h-4 w-4" />
-                      View Live
-                    </a>
-                  </Button>
-                  <Button variant="outline" asChild>
-                    <a href={selectedProject.githubUrl} target="_blank" rel="noopener noreferrer">
-                      <Github className="mr-2 h-4 w-4" />
-                      Source Code
-                    </a>
-                  </Button>
-                </div>
               </div>
             </CardContent>
           </Card>

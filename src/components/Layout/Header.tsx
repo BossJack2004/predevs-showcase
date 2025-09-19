@@ -60,14 +60,9 @@ const Header = () => {
                 </Button>
               </>
             ) : (
-              <>
-                <Button variant="outline" size="sm" asChild className="hover-glow">
-                  <Link to="/auth">Admin Login</Link>
-                </Button>
-                <Button variant="default" className="hover-glow">
-                  Get Started
-                </Button>
-              </>
+              <Button variant="default" className="hover-glow">
+                Get Started
+              </Button>
             )}
           </div>
 
@@ -115,14 +110,9 @@ const Header = () => {
                     </Button>
                   </>
                 ) : (
-                  <>
-                    <Button variant="outline" size="sm" asChild className="w-full hover-glow">
-                      <Link to="/auth">Admin Login</Link>
-                    </Button>
-                    <Button variant="default" className="w-full hover-glow">
-                      Get Started
-                    </Button>
-                  </>
+                  <Button variant="default" className="w-full hover-glow">
+                    Get Started
+                  </Button>
                 )}
               </div>
             </div>

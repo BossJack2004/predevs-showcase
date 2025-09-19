@@ -125,7 +125,12 @@ const AdminDynamic = () => {
 
   // Merge database projects with default projects
   React.useEffect(() => {
-    setAllProjects([...dbProjects, ...defaultProjects]);
+    // Filter out default projects that have been converted to database projects
+    const dbProjectTitles = dbProjects.map(p => p.title);
+    const remainingDefaultProjects = defaultProjects.filter(dp => 
+      !dbProjectTitles.includes(dp.title)
+    );
+    setAllProjects([...dbProjects, ...remainingDefaultProjects]);
   }, [dbProjects]);
 
   const [contentForm, setContentForm] = useState({
@@ -200,7 +205,19 @@ const AdminDynamic = () => {
 
   const handleProjectSubmit = async (projectData: any) => {
     if (selectedProject) {
-      await updateProject(selectedProject.id, projectData);
+      // Check if it's a default project (string ID starting with 'default-')
+      if (selectedProject.id.toString().startsWith('default-')) {
+        // Convert default project to database project when edited
+        const newProject = await addProject(projectData);
+        // Remove the default project and add the new database project
+        setAllProjects(prev => {
+          const filtered = prev.filter(p => p.id !== selectedProject.id);
+          return [newProject, ...filtered];
+        });
+      } else {
+        // Update existing database project
+        await updateProject(selectedProject.id, projectData);
+      }
     } else {
       await addProject(projectData);
     }
@@ -401,28 +418,26 @@ const AdminDynamic = () => {
                             )}
                             {project.status}
                           </Badge>
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            className="hover-scale"
+                            onClick={() => {
+                              setSelectedProject(project);
+                              setShowProjectForm(true);
+                            }}
+                          >
+                            <Edit3 className="h-4 w-4" />
+                          </Button>
                           {!project.id.toString().startsWith('default-') && (
-                            <>
-                              <Button 
-                                variant="ghost" 
-                                size="sm" 
-                                className="opacity-0 group-hover:opacity-100 transition-opacity hover-scale"
-                                onClick={() => {
-                                  setSelectedProject(project);
-                                  setShowProjectForm(true);
-                                }}
-                              >
-                                <Edit3 className="h-4 w-4" />
-                              </Button>
-                              <Button 
-                                variant="ghost" 
-                                size="sm" 
-                                className="opacity-0 group-hover:opacity-100 transition-opacity hover-scale text-destructive"
-                                onClick={() => handleDeleteProject(project.id)}
-                              >
-                                <Trash2 className="h-4 w-4" />
-                              </Button>
-                            </>
+                            <Button 
+                              variant="ghost" 
+                              size="sm" 
+                              className="hover-scale text-destructive"
+                              onClick={() => handleDeleteProject(project.id)}
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
                           )}
                           {project.id.toString().startsWith('default-') && (
                             <Badge variant="outline" className="text-xs">

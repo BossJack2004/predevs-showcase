@@ -27,9 +27,9 @@ const About = () => {
   ];
 
   const team = [
-    { name: 'Alex Chen', role: 'Lead Developer', speciality: 'Full-Stack Architecture' },
-    { name: 'Sarah Kim', role: 'UI/UX Designer', speciality: 'Design Systems' },
-    { name: 'Marcus Rodriguez', role: 'DevOps Engineer', speciality: 'Cloud Infrastructure' },
+    { name: 'Emmanuel Laurente', role: 'Lead Developer', speciality: 'Full-Stack Architecture' },
+    { name: 'Jack Daniel Pineda', role: 'UI/UX Designer', speciality: 'Design Systems' },
+    { name: 'Kim Portinto', role: 'DevOps Engineer', speciality: 'Cloud Infrastructure' },
   ];
 
   return (

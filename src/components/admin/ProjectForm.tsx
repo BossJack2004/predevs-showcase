@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -6,8 +6,9 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Plus, X } from 'lucide-react';
+import { Plus, X, Upload, Image as ImageIcon, Trash2 } from 'lucide-react';
 import { Project } from '@/hooks/useProjects';
+import { supabase } from '@/integrations/supabase/client';
 
 interface ProjectFormProps {
   project?: Project | null;
@@ -40,14 +41,78 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({
 
   const [newTech, setNewTech] = useState('');
   const [loading, setLoading] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string>('');
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Update form data when project prop changes
+  useEffect(() => {
+    if (project) {
+      setFormData({
+        title: project.title || '',
+        description: project.description || '',
+        long_description: project.long_description || '',
+        category: project.category || 'web',
+        technologies: project.technologies || [],
+        image_url: project.image_url || '',
+        project_url: project.project_url || '',
+        github_url: project.github_url || '',
+        client_name: project.client_name || '',
+        start_date: project.start_date || '',
+        end_date: project.end_date || '',
+        status: project.status || 'completed',
+        featured: project.featured || false,
+      });
+    } else {
+      // Reset form for new projects
+      setFormData({
+        title: '',
+        description: '',
+        long_description: '',
+        category: 'web',
+        technologies: [],
+        image_url: '',
+        project_url: '',
+        github_url: '',
+        client_name: '',
+        start_date: '',
+        end_date: '',
+        status: 'completed',
+        featured: false,
+      });
+    }
+  }, [project]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
     try {
-      await onSubmit(formData);
+      let imageUrl = formData.image_url;
+      
+      // Upload image if a file is selected
+      if (selectedFile) {
+        setUploading(true);
+        imageUrl = await uploadImage(selectedFile);
+        setUploading(false);
+      }
+
+      const projectData = {
+        ...formData,
+        image_url: imageUrl,
+      };
+
+      await onSubmit(projectData);
       onOpenChange(false);
+      
+      // Reset form and image states
+      setSelectedFile(null);
+      setPreviewUrl('');
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
+      
       // Reset form for new projects
       if (!project) {
         setFormData({
@@ -68,6 +133,7 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({
       }
     } catch (error) {
       console.error('Error submitting project:', error);
+      setUploading(false);
     } finally {
       setLoading(false);
     }
@@ -88,6 +154,55 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({
       ...prev,
       technologies: prev.technologies.filter(t => t !== tech)
     }));
+  };
+
+  const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      // Validate file type
+      if (!file.type.startsWith('image/')) {
+        alert('Please select an image file');
+        return;
+      }
+      
+      // Validate file size (max 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        alert('Image size should be less than 5MB');
+        return;
+      }
+
+      setSelectedFile(file);
+      const url = URL.createObjectURL(file);
+      setPreviewUrl(url);
+    }
+  };
+
+  const uploadImage = async (file: File): Promise<string> => {
+    const fileExt = file.name.split('.').pop();
+    const fileName = `${Date.now()}.${fileExt}`;
+    const filePath = `project-images/${fileName}`;
+
+    const { data, error } = await supabase.storage
+      .from('project-images')
+      .upload(filePath, file);
+
+    if (error) {
+      throw error;
+    }
+
+    const { data: { publicUrl } } = supabase.storage
+      .from('project-images')
+      .getPublicUrl(filePath);
+
+    return publicUrl;
+  };
+
+  const removeSelectedImage = () => {
+    setSelectedFile(null);
+    setPreviewUrl('');
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
   };
 
   return (
@@ -174,13 +289,80 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="image_url">Image URL</Label>
-              <Input
-                id="image_url"
-                value={formData.image_url}
-                onChange={(e) => setFormData(prev => ({ ...prev, image_url: e.target.value }))}
-                placeholder="https://example.com/image.jpg"
-              />
+              <Label>Project Image</Label>
+              
+              {/* Image Upload Section */}
+              <div className="space-y-4">
+                {/* Upload Button */}
+                <div className="flex items-center gap-4">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => fileInputRef.current?.click()}
+                    className="flex items-center gap-2"
+                    disabled={uploading}
+                  >
+                    <Upload className="h-4 w-4" />
+                    {uploading ? 'Uploading...' : 'Upload Image'}
+                  </Button>
+                  
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    onChange={handleFileSelect}
+                    className="hidden"
+                  />
+                  
+                  {selectedFile && (
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      onClick={removeSelectedImage}
+                      className="text-destructive hover:text-destructive"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  )}
+                </div>
+
+                {/* Image Preview */}
+                {(previewUrl || formData.image_url) && (
+                  <div className="mt-2">
+                    <Label className="text-sm text-muted-foreground">Preview:</Label>
+                    <div className="mt-1 rounded-lg overflow-hidden border border-border/40 relative group">
+                      <img 
+                        src={previewUrl || formData.image_url} 
+                        alt="Project preview" 
+                        className="w-full h-32 object-cover"
+                        onError={(e) => {
+                          e.currentTarget.style.display = 'none';
+                        }}
+                      />
+                      {selectedFile && (
+                        <div className="absolute top-2 right-2 bg-black/50 text-white px-2 py-1 rounded text-xs">
+                          New Image
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
+
+                {/* Fallback URL Input */}
+                <div className="space-y-2">
+                  <Label htmlFor="image_url" className="text-sm text-muted-foreground">
+                    Or enter image URL manually:
+                  </Label>
+                  <Input
+                    id="image_url"
+                    value={formData.image_url}
+                    onChange={(e) => setFormData(prev => ({ ...prev, image_url: e.target.value }))}
+                    placeholder="https://example.com/image.jpg"
+                    disabled={!!selectedFile}
+                  />
+                </div>
+              </div>
             </div>
             
             <div className="space-y-2">
@@ -264,8 +446,8 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
               Cancel
             </Button>
-            <Button type="submit" disabled={loading}>
-              {loading ? 'Saving...' : (project ? 'Update' : 'Create')} Project
+            <Button type="submit" disabled={loading || uploading}>
+              {loading || uploading ? 'Saving...' : (project ? 'Update' : 'Create')} Project
             </Button>
           </div>
         </form>

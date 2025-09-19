@@ -40,7 +40,7 @@ const Hero = () => {
               <span className="gradient-text">{content.hero_title}</span>
             ) : (
               <>
-                <span className="gradient-text">PREDEVS</span>
+                <span className="gradient-text">PRECODES</span>
                 <br />
                 <span className="text-foreground">Professional</span>
                 <br />

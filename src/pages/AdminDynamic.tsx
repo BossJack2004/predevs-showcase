@@ -47,7 +47,7 @@ const AdminDynamic = () => {
   const [selectedProject, setSelectedProject] = useState(null);
   const [showProjectForm, setShowProjectForm] = useState(false);
   
-  // Default projects with PREDEVS.dev branding
+  // Default projects with PRECODES.dev branding
   const defaultProjects = [
     {
       id: 'default-1',
@@ -57,8 +57,8 @@ const AdminDynamic = () => {
       long_description: 'A comprehensive e-commerce solution featuring real-time inventory management, advanced analytics, AI-powered product recommendations, and seamless payment processing. Built with modern React architecture and microservices backend for maximum scalability.',
       technologies: ['React', 'Next.js', 'Node.js', 'PostgreSQL', 'Stripe', 'Redis', 'AWS'],
       image_url: '/assets/portfolio-ecommerce.jpg',
-      project_url: 'https://ecoshop-demo.predevs.dev',
-      github_url: 'https://github.com/predevs/ecoshop',
+      project_url: 'https://ecoshop-demo.precodes.dev',
+      github_url: 'https://github.com/precodes/ecoshop',
       client_name: 'EcoShop Inc.',
       start_date: '2024-01-01',
       end_date: '2024-04-30',
@@ -76,7 +76,7 @@ const AdminDynamic = () => {
       technologies: ['React Native', 'TypeScript', 'Firebase', 'Plaid API', 'AWS', 'Node.js'],
       image_url: '/assets/portfolio-banking.jpg',
       project_url: 'https://apps.apple.com/securebank-mobile',
-      github_url: 'https://github.com/predevs/securebank-mobile',
+      github_url: 'https://github.com/precodes/securebank-mobile',
       client_name: 'SecureBank Corp',
       start_date: '2024-02-01',
       end_date: '2024-07-30',
@@ -93,8 +93,8 @@ const AdminDynamic = () => {
       long_description: 'A powerful SaaS analytics platform offering real-time data visualization, custom reporting, predictive analytics, and team collaboration features. Built with modern web technologies and optimized for performance.',
       technologies: ['Next.js', 'TypeScript', 'D3.js', 'Python', 'FastAPI', 'PostgreSQL'],
       image_url: '/assets/portfolio-saas.jpg',
-      project_url: 'https://dataviz-pro.predevs.dev',
-      github_url: 'https://github.com/predevs/dataviz-pro',
+      project_url: 'https://dataviz-pro.precodes.dev',
+      github_url: 'https://github.com/precodes/dataviz-pro',
       client_name: 'TechCorp Analytics',
       start_date: '2024-03-01',
       end_date: '2024-08-15',
@@ -111,8 +111,8 @@ const AdminDynamic = () => {
       long_description: 'An intelligent customer relationship management system featuring AI-powered lead scoring, automated workflows, advanced reporting, and seamless integrations. Designed for enterprise-scale operations with high-performance architecture.',
       technologies: ['Vue.js', 'Python', 'TensorFlow', 'MongoDB', 'Docker', 'Kubernetes'],
       image_url: '/assets/portfolio-crm.jpg',
-      project_url: 'https://smartcrm-demo.predevs.dev',
-      github_url: 'https://github.com/predevs/smartcrm',
+      project_url: 'https://smartcrm-demo.precodes.dev',
+      github_url: 'https://github.com/precodes/smartcrm',
       client_name: 'Enterprise Solutions Ltd',
       start_date: '2024-04-01',
       end_date: '2024-11-30',
@@ -255,7 +255,7 @@ const AdminDynamic = () => {
                 <h1 className="text-2xl font-bold text-foreground">Admin Dashboard</h1>
                 <p className="text-sm text-muted-foreground flex items-center gap-2">
                   <Globe className="h-3 w-3" />
-                  PREDEVS.dev Management Portal
+                  PRECODES.dev Management Portal
                 </p>
               </div>
             </div>

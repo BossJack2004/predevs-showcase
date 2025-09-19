@@ -1,8 +1,11 @@
 import { Button } from '@/components/ui/button';
 import { ArrowRight, Play } from 'lucide-react';
+import { useSiteContent } from '@/hooks/useSiteContent';
 import heroBg from '@/assets/hero-bg.jpg';
 
 const Hero = () => {
+  const { content } = useSiteContent();
+
   return (
     <section id="home" className="min-h-screen relative flex items-center justify-center overflow-hidden">
       {/* Background Image with Overlay */}
@@ -33,17 +36,24 @@ const Hero = () => {
 
           {/* Main Heading */}
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight">
-            <span className="gradient-text">Professional</span>
-            <br />
-            <span className="text-foreground">Reliable</span>
-            <br />
-            <span className="gradient-text">Exceptional</span>
+            {content?.hero_title ? (
+              <span className="gradient-text">{content.hero_title}</span>
+            ) : (
+              <>
+                <span className="gradient-text">Professional</span>
+                <br />
+                <span className="text-foreground">Reliable</span>
+                <br />
+                <span className="gradient-text">Exceptional</span>
+              </>
+            )}
           </h1>
 
           {/* Subheading */}
           <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto mb-8 leading-relaxed">
-            We craft digital experiences that elevate your business. 
-            Expert development, reliable solutions, exceptional results.
+            {content?.hero_subtitle || 
+              "We craft digital experiences that elevate your business. Expert development, reliable solutions, exceptional results."
+            }
           </p>
 
           {/* CTA Buttons */}

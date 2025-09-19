@@ -4,6 +4,9 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
+import { useState } from 'react';
+import { useInquiries } from '@/hooks/useInquiries';
+import { useSiteContent } from '@/hooks/useSiteContent';
 import { 
   Mail, 
   Phone, 
@@ -15,23 +18,34 @@ import {
 } from 'lucide-react';
 
 const Contact = () => {
+  const { submitInquiry } = useInquiries();
+  const { settings } = useSiteContent();
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    company: '',
+    subject: '',
+    message: '',
+  });
+  const [loading, setLoading] = useState(false);
+
   const contactInfo = [
     {
       icon: Mail,
       title: 'Email Us',
-      content: 'hello@predevs.com',
-      link: 'mailto:hello@predevs.com',
+      content: settings?.contact_email || 'hello@predevs.com',
+      link: `mailto:${settings?.contact_email || 'hello@predevs.com'}`,
     },
     {
       icon: Phone,
       title: 'Call Us',
-      content: '+1 (555) 123-4567',
-      link: 'tel:+15551234567',
+      content: settings?.phone || '+1 (555) 123-4567',
+      link: `tel:${settings?.phone || '+15551234567'}`,
     },
     {
       icon: MapPin,
       title: 'Visit Us',
-      content: 'San Francisco, CA',
+      content: settings?.address || 'San Francisco, CA',
       link: '#',
     },
     {
@@ -41,6 +55,27 @@ const Contact = () => {
       link: '#',
     },
   ];
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!formData.name || !formData.email || !formData.message) return;
+
+    setLoading(true);
+    try {
+      await submitInquiry(formData);
+      setFormData({
+        name: '',
+        email: '',
+        company: '',
+        subject: '',
+        message: '',
+      });
+    } catch (error) {
+      console.error('Error submitting inquiry:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <section id="contact" className="py-20 relative">
@@ -66,67 +101,77 @@ const Contact = () => {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
-              <div className="grid md:grid-cols-2 gap-4">
+              <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="space-y-2">
-                  <Label htmlFor="firstName">First Name</Label>
+                  <Label htmlFor="name">Full Name *</Label>
                   <Input 
-                    id="firstName" 
-                    placeholder="John" 
+                    id="name" 
+                    value={formData.name}
+                    onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
+                    placeholder="John Doe" 
+                    className="glass-card border-primary/20 focus:border-primary"
+                    required
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="email">Email *</Label>
+                  <Input 
+                    id="email" 
+                    type="email" 
+                    value={formData.email}
+                    onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
+                    placeholder="john@company.com" 
+                    className="glass-card border-primary/20 focus:border-primary"
+                    required
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="company">Company (Optional)</Label>
+                  <Input 
+                    id="company" 
+                    value={formData.company}
+                    onChange={(e) => setFormData(prev => ({ ...prev, company: e.target.value }))}
+                    placeholder="Your Company" 
                     className="glass-card border-primary/20 focus:border-primary"
                   />
                 </div>
+
                 <div className="space-y-2">
-                  <Label htmlFor="lastName">Last Name</Label>
+                  <Label htmlFor="subject">Subject</Label>
                   <Input 
-                    id="lastName" 
-                    placeholder="Doe" 
+                    id="subject" 
+                    value={formData.subject}
+                    onChange={(e) => setFormData(prev => ({ ...prev, subject: e.target.value }))}
+                    placeholder="Project Inquiry" 
                     className="glass-card border-primary/20 focus:border-primary"
                   />
                 </div>
-              </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
-                <Input 
-                  id="email" 
-                  type="email" 
-                  placeholder="john@company.com" 
-                  className="glass-card border-primary/20 focus:border-primary"
-                />
-              </div>
+                <div className="space-y-2">
+                  <Label htmlFor="message">Message *</Label>
+                  <Textarea 
+                    id="message" 
+                    value={formData.message}
+                    onChange={(e) => setFormData(prev => ({ ...prev, message: e.target.value }))}
+                    placeholder="Tell us about your project..." 
+                    rows={6}
+                    className="glass-card border-primary/20 focus:border-primary resize-none"
+                    required
+                  />
+                </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="company">Company (Optional)</Label>
-                <Input 
-                  id="company" 
-                  placeholder="Your Company" 
-                  className="glass-card border-primary/20 focus:border-primary"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="subject">Subject</Label>
-                <Input 
-                  id="subject" 
-                  placeholder="Project Inquiry" 
-                  className="glass-card border-primary/20 focus:border-primary"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="message">Message</Label>
-                <Textarea 
-                  id="message" 
-                  placeholder="Tell us about your project..." 
-                  rows={6}
-                  className="glass-card border-primary/20 focus:border-primary resize-none"
-                />
-              </div>
-
-              <Button size="lg" className="w-full hover-glow interactive-scale group">
-                <Send className="mr-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
-                Send Message
-              </Button>
+                <Button 
+                  type="submit" 
+                  size="lg" 
+                  disabled={loading}
+                  className="w-full hover-glow interactive-scale group"
+                >
+                  <Send className="mr-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
+                  {loading ? 'Sending...' : 'Send Message'}
+                </Button>
+              </form>
 
               <p className="text-sm text-muted-foreground text-center">
                 We'll get back to you within 24 hours.

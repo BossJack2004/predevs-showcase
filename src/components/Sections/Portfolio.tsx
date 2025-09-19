@@ -1,9 +1,10 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Progress } from '@/components/ui/progress';
+import { useProjects } from '@/hooks/useProjects';
 import { 
   ExternalLink, 
   Github,
@@ -34,8 +35,10 @@ import saasImg from '@/assets/portfolio-saas.jpg';
 import crmImg from '@/assets/portfolio-crm.jpg';
 
 const Portfolio = () => {
+  const { projects: dbProjects, loading } = useProjects();
   const [activeCategory, setActiveCategory] = useState('all');
-  const [selectedProject, setSelectedProject] = useState<typeof projects[0] | null>(null);
+  const [selectedProject, setSelectedProject] = useState<any>(null);
+  const [allProjects, setAllProjects] = useState<any[]>([]);
 
   const categories = [
     { id: 'all', label: 'All Projects', count: 8 },
@@ -44,9 +47,10 @@ const Portfolio = () => {
     { id: 'enterprise', label: 'Enterprise', count: 2 },
   ];
 
-  const projects = [
+  // Default projects to merge with database projects
+  const defaultProjects = [
     {
-      id: 1,
+      id: 'default-1',
       title: 'ShopFlow - E-Commerce Platform',
       category: 'web',
       shortDescription: 'Next-generation e-commerce platform with AI-powered recommendations.',
@@ -81,7 +85,7 @@ const Portfolio = () => {
       tags: ['Featured', 'Award Winner', 'High Performance']
     },
     {
-      id: 2,
+      id: 'default-2',
       title: 'SecureBank - Mobile Banking',
       category: 'mobile',
       shortDescription: 'Secure mobile banking app with biometric authentication and real-time features.',
@@ -100,7 +104,7 @@ const Portfolio = () => {
         satisfaction: '95% user satisfaction'
       },
       testimonial: {
-        text: "The most secure and user-friendly banking app we\'ve ever developed. Our customers love it!",
+        text: "The most secure and user-friendly banking app we've ever developed. Our customers love it!",
         author: "Michael Chen",
         role: "CTO, SecureBank",
         rating: 5
@@ -116,7 +120,7 @@ const Portfolio = () => {
       tags: ['Security First', 'User Favorite', 'Cross-Platform']
     },
     {
-      id: 3,
+      id: 'default-3',
       title: 'DataViz Pro - Analytics Dashboard',
       category: 'web',
       shortDescription: 'Advanced analytics dashboard with real-time data visualization and reporting.',
@@ -151,7 +155,7 @@ const Portfolio = () => {
       tags: ['Scalable', 'Enterprise Ready', 'Performance Leader']
     },
     {
-      id: 4,
+      id: 'default-4',
       title: 'SmartCRM - AI-Powered System',
       category: 'enterprise',
       shortDescription: 'Enterprise CRM with AI-powered lead scoring and automation workflows.',
@@ -170,7 +174,7 @@ const Portfolio = () => {
         adoption: '98% user adoption rate'
       },
       testimonial: {
-        text: "SmartCRM\'s AI capabilities have revolutionized our sales process. Our team is more productive than ever!",
+        text: "SmartCRM's AI capabilities have revolutionized our sales process. Our team is more productive than ever!",
         author: "David Park",
         role: "VP Sales, Enterprise Solutions",
         rating: 5
@@ -187,6 +191,43 @@ const Portfolio = () => {
     }
   ];
 
+  // Merge database projects with default projects
+  useEffect(() => {
+    const dbProjectsWithMeta = dbProjects.map(project => ({
+      ...project,
+      shortDescription: project.description,
+      fullDescription: project.long_description,
+      technologies: project.technologies || [],
+      image: project.image_url || ecommerceImg,
+      mockupType: 'laptop',
+      liveUrl: project.project_url,
+      githubUrl: project.github_url,
+      duration: '3-6 months',
+      teamSize: '4-8 developers',
+      results: {
+        performance: 'Excellent performance',
+        satisfaction: '95%+ client satisfaction',
+        delivery: 'On-time delivery',
+        quality: 'High-quality code'
+      },
+      testimonial: {
+        text: "Outstanding work! The team delivered exactly what we needed.",
+        author: project.client_name || "Client",
+        role: "Project Stakeholder",
+        rating: 5
+      },
+      features: [
+        'Custom development',
+        'Responsive design',
+        'Performance optimized',
+        'Scalable architecture'
+      ],
+      tags: ['Custom Project', 'Client Work']
+    }));
+
+    setAllProjects([...dbProjectsWithMeta, ...defaultProjects]);
+  }, [dbProjects]);
+
   const stats = [
     { label: 'Projects Delivered', value: '50+', icon: CheckCircle, color: 'text-success' },
     { label: 'Happy Clients', value: '98%', icon: Heart, color: 'text-pink-500' },
@@ -195,8 +236,20 @@ const Portfolio = () => {
   ];
 
   const filteredProjects = activeCategory === 'all' 
-    ? projects 
-    : projects.filter(project => project.category === activeCategory);
+    ? allProjects 
+    : allProjects.filter(project => project.category === activeCategory);
+
+  if (loading) {
+    return (
+      <section id="portfolio" className="py-24 relative overflow-hidden">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="text-center">
+            <p className="text-xl text-muted-foreground">Loading projects...</p>
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section id="portfolio" className="py-24 relative overflow-hidden">
@@ -344,7 +397,7 @@ const Portfolio = () => {
                 <div className="grid grid-cols-2 gap-4 mb-6 p-4 bg-muted/30 rounded-lg">
                   {Object.entries(project.results).slice(0, 2).map(([key, value]) => (
                     <div key={key} className="text-center">
-                      <div className="text-lg font-bold text-primary">{value}</div>
+                       <div className="text-lg font-bold text-primary">{String(value)}</div>
                       <div className="text-xs text-muted-foreground capitalize">{key.replace(/([A-Z])/g, ' $1').trim()}</div>
                     </div>
                   ))}
@@ -506,7 +559,7 @@ const Portfolio = () => {
                   <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
                     {Object.entries(selectedProject.results).map(([key, value]) => (
                       <div key={key} className="text-center p-3 bg-muted/50 rounded-lg">
-                        <div className="text-lg font-bold text-primary">{value}</div>
+                        <div className="text-lg font-bold text-primary">{String(value)}</div>
                         <div className="text-xs text-muted-foreground capitalize">
                           {key.replace(/([A-Z])/g, ' $1').trim()}
                         </div>
